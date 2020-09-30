@@ -1,0 +1,5 @@
+telegram_bot_api:
+    bots:
+        fedorovv_bot:
+            token: '%env(APP_TELEGRAM_TOKEN)%'
+    default: 'fedorovv_bot'
