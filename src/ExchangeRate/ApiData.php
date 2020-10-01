@@ -25,9 +25,9 @@ class ApiData
     /**
      * @return mixed
      */
-    public function getData()
+    public function run()
     {
         $this->object->getExchangeRateData();
-        return $this->object->transformData();
+        return $this->object->persistData();
     }
 }

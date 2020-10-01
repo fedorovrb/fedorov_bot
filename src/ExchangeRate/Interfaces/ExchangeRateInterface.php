@@ -5,5 +5,5 @@ namespace App\ExchangeRate\Interfaces;
 interface ExchangeRateInterface
 {
     public function getExchangeRateData();
-    public function transformData();
+    public function persistData();
 }

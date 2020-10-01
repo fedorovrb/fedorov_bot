@@ -7,6 +7,11 @@ use App\ExchangeRate\Interfaces\ExchangeRateInterface;
 class ExchangeRateMonobank implements ExchangeRateInterface
 {
     /**
+     *
+     */
+    const BANK = 'monobank';
+
+    /**
      * @var int
      */
     private int $usd_iso_code = 840;
@@ -32,6 +37,23 @@ class ExchangeRateMonobank implements ExchangeRateInterface
     private array $data = [];
 
     /**
+     * @var object
+     */
+    private object $entity;
+
+    /**
+     * @var object
+     */
+    private object $entityManager;
+
+
+    public function __construct($entity, $entityManager)
+    {
+        $this->entity = $entity;
+        $this->entityManager = $entityManager;
+    }
+
+    /**
      * @return mixed
      */
     public function getExchangeRateData()
@@ -48,11 +70,10 @@ class ExchangeRateMonobank implements ExchangeRateInterface
     }
 
     /**
-     * @return array|false
+     * @return bool
      */
-    public function transformData()
+    public function persistData()
     {
-        $result = [];
 
         if (count($this->data) === 1) {
             return false;
@@ -63,18 +84,20 @@ class ExchangeRateMonobank implements ExchangeRateInterface
                 case $this->uah_iso_code:
                     switch ($key["currencyCodeA"]) {
                         case $this->usd_iso_code:
-                            $result['usd_buy'] = round($key['rateBuy'], 2);
-                            $result['usd_sell'] = round($key['rateSell'], 2);
+                            $this->entity->setUsd(round($key['rateBuy'], 2) . ' / ' . round($key['rateSell'], 2));
                             break;
                         case $this->euro_iso_code:
-                            $result['euro_buy'] =  round($key['rateBuy'], 2);
-                            $result['euro_sell'] = round($key['rateSell'], 2);
+                            $this->entity->setEuro(round($key['rateBuy'], 2) . ' / ' . round($key['rateSell'], 2));
                             break;
                     }
                     break;
             }
         }
 
-        return $result;
+        $this->entity->setBank(self::BANK);
+        $this->entityManager->persist($this->entity);
+        $this->entityManager->flush();
+
+        return true;
     }
 }
