@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ExchangeRate\Interfaces;
+namespace App\ExchangeRate;
 
 interface ExchangeRateInterface
 {

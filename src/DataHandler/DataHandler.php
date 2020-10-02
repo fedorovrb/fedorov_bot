@@ -12,11 +12,37 @@ class DataHandler implements DataHandlerInterface
     private $monobankRatesData;
 
     /**
+     * @var
+     */
+    private $privatbankRatesData;
+
+    /**
+     * @var
+     */
+    private $nbuRatesData;
+
+    /**
      * @param mixed $monobankRatesData
      */
     public function setMonobankRatesData(object $monobankRatesData): void
     {
         $this->monobankRatesData = $monobankRatesData;
+    }
+
+    /**
+     * @param mixed $privatbankRatesData
+     */
+    public function setPrivatbankRatesData(object $privatbankRatesData): void
+    {
+        $this->privatbankRatesData = $privatbankRatesData;
+    }
+
+    /**
+     * @param mixed $nbuRatesData
+     */
+    public function setNbuRatesData(object $nbuRatesData): void
+    {
+        $this->nbuRatesData = $nbuRatesData;
     }
 
     /**
@@ -30,7 +56,17 @@ class DataHandler implements DataHandlerInterface
 
             case '/rates':
                 $bot->sendMessage(['chat_id' => $updates->message->from->id, 'text' =>
-                    'Monobank ' . PHP_EOL . PHP_EOL .
+                    'НБУ ' . PHP_EOL . PHP_EOL .
+                    '💶 Евро: *' . $this->nbuRatesData->getEuro() . ' UAH*' . PHP_EOL .
+                    '💵 Доллар: *' . $this->nbuRatesData->getUsd() . ' UAH*' . PHP_EOL . PHP_EOL .
+                    'Данные на *' . date_format($this->nbuRatesData->getDate(), 'd-m-Y H:i') . '*' . PHP_EOL . PHP_EOL .
+                    '-----------------------------------------------' . PHP_EOL .
+                    'Приватбанк ' . PHP_EOL . PHP_EOL .
+                    '💶 Евро: *' . $this->privatbankRatesData->getEuro() . ' UAH*' . PHP_EOL .
+                    '💵 Доллар: *' . $this->privatbankRatesData->getUsd() . ' UAH*' . PHP_EOL . PHP_EOL .
+                    'Данные на *' . date_format($this->privatbankRatesData->getDate(), 'd-m-Y H:i') . '*' . PHP_EOL . PHP_EOL .
+                    '-----------------------------------------------' . PHP_EOL .
+                    'Монобанк ' . PHP_EOL . PHP_EOL .
                     '💶 Евро: *' . $this->monobankRatesData->getEuro() . ' UAH*' . PHP_EOL .
                     '💵 Доллар: *' . $this->monobankRatesData->getUsd() . ' UAH*' . PHP_EOL . PHP_EOL .
                     'Данные на *' . date_format($this->monobankRatesData->getDate(), 'd-m-Y H:i') . '*', 'parse_mode' => 'Markdown']);

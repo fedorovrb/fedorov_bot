@@ -4,7 +4,6 @@ namespace App\Command;
 
 use App\Entity\RatesEntity;
 use App\ExchangeRate\ApiData;
-use App\ExchangeRate\ExchangeRateMonobank;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,6 +15,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ImportCommand extends Command
 {
     protected static $defaultName = 'import';
+
+    const PRIVATBANK = 'Privatbank';
+    const MONOBANK = 'Monobank';
+    const NBU = 'Nbu';
 
     private ContainerInterface $container;
 
@@ -38,17 +41,20 @@ class ImportCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        try {
-            $apiData = new ApiData(new ExchangeRateMonobank(new RatesEntity(), $this->container->get('doctrine')->getManager()));
-        } catch (\Exception $e) {
-            $io->error('Произошла ошибка');
-            return Command::SUCCESS;
-        }
+        foreach (array(self::MONOBANK, self::PRIVATBANK, self::NBU) as $value) {
+            try {
+                $className = 'App\ExchangeRate\ExchangeRate' . $value;
+                $apiData = new ApiData(new $className(new RatesEntity(), $this->container->get('doctrine')->getManager()));
+            } catch (\Exception $e) {
+                $io->error($value . ': Произошла ошибка при синхронизации');
+                return Command::SUCCESS;
+            }
 
-        if ($apiData->run()) {
-            $io->success('Данные добавлены');
-        } else {
-            $io->error('Произошла ошибка');
+            if ($apiData->run()) {
+                $io->success($value . ': Данные добавлены');
+            } else {
+                $io->error($value . ': Произошла ошибка');
+            }
         }
 
         return Command::SUCCESS;

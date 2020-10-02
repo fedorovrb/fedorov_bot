@@ -3,9 +3,6 @@
 
 namespace App\ExchangeRate;
 
-use App\ExchangeRate\Interfaces\ExchangeRateInterface;
-
-
 class ApiData
 {
     /**

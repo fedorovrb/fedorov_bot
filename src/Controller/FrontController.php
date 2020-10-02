@@ -28,6 +28,8 @@ class FrontController extends AbstractController
     {
 
         $this->dataHandler->setMonobankRatesData($this->getDoctrine()->getRepository(RatesEntity::class)->findByBank('monobank'));
+        $this->dataHandler->setPrivatbankRatesData($this->getDoctrine()->getRepository(RatesEntity::class)->findByBank('privatbank'));
+        $this->dataHandler->setNbuRatesData($this->getDoctrine()->getRepository(RatesEntity::class)->findByBank('nbu'));
         $this->dataHandler->handle($this->bot->getBot());
 
         return new Response('Ok');

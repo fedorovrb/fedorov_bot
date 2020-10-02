@@ -2,9 +2,7 @@
 
 namespace App\ExchangeRate;
 
-use App\ExchangeRate\Interfaces\ExchangeRateInterface;
-
-class ExchangeRateMonobank implements ExchangeRateInterface
+class ExchangeRateMonobank extends ExchangeRateAbstract
 {
     /**
      *
@@ -29,44 +27,12 @@ class ExchangeRateMonobank implements ExchangeRateInterface
     /**
      * @var string
      */
-    private string $url = 'https://api.monobank.ua/bank/currency';
-
-    /**
-     * @var array
-     */
-    private array $data = [];
-
-    /**
-     * @var object
-     */
-    private object $entity;
-
-    /**
-     * @var object
-     */
-    private object $entityManager;
+    protected string $url = 'https://api.monobank.ua/bank/currency';
 
 
     public function __construct($entity, $entityManager)
     {
-        $this->entity = $entity;
-        $this->entityManager = $entityManager;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getExchangeRateData()
-    {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $this->url);
-        $result = curl_exec($ch);
-        curl_close($ch);
-
-        $this->data = json_decode($result, true);
-
-        return $this->data;
+        parent::__construct($entity, $entityManager);
     }
 
     /**
