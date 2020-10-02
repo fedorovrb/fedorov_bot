@@ -1,2 +1,2 @@
 cd /home/alex/own/FedorovBot
-symfony console import
+/usr/local/bin/symfony console import

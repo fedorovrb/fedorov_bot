@@ -19,32 +19,20 @@ class RatesEntityRepository extends ServiceEntityRepository
         parent::__construct($registry, RatesEntity::class);
     }
 
-    // /**
-    //  * @return RatesEntity[] Returns an array of RatesEntity objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param $value
+     * @return RatesEntity[] Returns an array of RatesEntity objects
+     */
+    public function findByBank($value)
     {
         return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
+            ->andWhere('r.bank = :val')
             ->setParameter('val', $value)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(10)
+            ->orderBy('r.id', 'DESC')
+            ->setMaxResults(1)
             ->getQuery()
-            ->getResult()
+            ->getSingleResult()
         ;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?RatesEntity
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

@@ -2,9 +2,8 @@
 
 namespace App\Controller;
 
+use App\DataHandler\DataHandlerInterface;
 use App\Entity\RatesEntity;
-use App\ExchangeRate\ApiData;
-use App\ExchangeRate\ExchangeRateMonobank;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,21 +11,25 @@ use Borsaco\TelegramBotApiBundle\Service\Bot;
 
 class FrontController extends AbstractController
 {
+
+    protected Bot $bot;
+
+    protected DataHandlerInterface $dataHandler;
+
+    public function __construct(Bot $bot, DataHandlerInterface $dataHandler)
+    {
+        $this->bot = $bot;
+        $this->dataHandler = $dataHandler;
+    }
     /**
      * @Route("/webhook", name="webhook")
      */
-    public function index(Bot $bot)
+    public function index(): Response
     {
-//        $a = new ApiData(new ExchangeRateMonobank());
-////        var_dump($a->getData()); die;
-//
-//        $bot = $bot->getBot()->getMe();
-//
-//
-////       $bot->sendMessage(['chat_id' => '200624774', 'text' => 'sdasdas']);
-//        $bot->getUpdates();
-//        return $this->render('front/index.html.twig', [
-//            'controller_name' => 'FrontController',
-//        ]);
+
+        $this->dataHandler->setMonobankRatesData($this->getDoctrine()->getRepository(RatesEntity::class)->findByBank('monobank'));
+        $this->dataHandler->handle($this->bot->getBot());
+
+        return new Response('Ok');
     }
 }
